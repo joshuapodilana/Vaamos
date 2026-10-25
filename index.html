@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudentOS | Interactive Portfolio</title>
+  <!-- FontAwesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       STUDENTOS DESIGN SYSTEM & STYLESHEET
+       ========================================================================== */
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: rgba(22, 28, 45, 0.75);
+      --bg-card-border: rgba(255, 255, 255, 0.12);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent-primary: #6366f1;
+      --accent-primary-hover: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --accent-green: #10b981;
+      --accent-pink: #ec4899;
+      --accent-yellow: #f59e0b;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-code: 'Fira Code', monospace;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.light-mode {
+      --bg-main: #f8fafc;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-card-border: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .bg-mesh {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: 
+        radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 45%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .glass-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px;
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--bg-card-border);
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; }
+    .status-dot { width: 10px; height: 10px; background-color: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.8; } }
+    .brand-text small { font-size: 0.75rem; color: var(--accent-primary); background: rgba(99, 102, 241, 0.15); padding: 2px 6px; border-radius: 4px; }
+
+    .top-actions { display: flex; gap: 10px; align-items: center; }
+    .btn-primary { background: var(--accent-primary); color: white; border: none; padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary:hover { background: var(--accent-primary-hover); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-1px); }
+    .btn-sm { padding: 6px 12px; font-size: 0.80rem; border-radius: var(--radius-sm); border: none; background: var(--accent-primary); color: white; cursor: pointer; transition: var(--transition); }
+    .btn-sm:hover { opacity: 0.9; }
+    .btn-outline { background: transparent; border: 1px solid var(--bg-card-border); color: var(--text-main); }
+    .btn-outline:hover { background: rgba(255, 255, 255, 0.05); }
+    .icon-btn { background: transparent; border: 1px solid var(--bg-card-border); color: var(--text-main); width: 36px; height: 36px; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+    .icon-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+    .workspace-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 30px; }
+    .hero-grid { display: grid; grid-template-columns: 360px 1fr; gap: 30px; align-items: center; }
+
+    .id-card-wrapper { perspective: 1000px; }
+    .id-card {
+      position: relative; background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-lg); padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); transform-style: preserve-3d; transition: transform 0.1s ease-out;
+    }
+    .card-top { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 20px; }
+    .card-body { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 15px; }
+    .avatar-container { position: relative; width: 110px; height: 110px; }
+    .avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-primary); box-shadow: 0 0 20px var(--accent-glow); }
+    .avatar-badge { position: absolute; bottom: 0; right: 4px; background: var(--accent-green); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; border: 2px solid var(--bg-main); }
+    .student-info h2 { font-size: 1.4rem; margin-bottom: 4px; }
+    .degree-tag { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; }
+    .meta-list { display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.2); padding: 8px 14px; border-radius: var(--radius-sm); width: 100%; }
+    
+    .contact-links-box {
+      margin-top: 12px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .contact-chip {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      border: 1px solid var(--bg-card-border);
+      transition: var(--transition);
+    }
+    .contact-chip:hover { color: var(--text-main); border-color: var(--accent-primary); }
+
+    .card-footer { margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-code); font-size: 0.7rem; color: var(--text-muted); }
+    .verify-badge { color: var(--accent-green); font-weight: 600; }
+
+    .intro-card { padding: 32px; display: flex; flex-direction: column; gap: 16px; }
+    .pill-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(245, 158, 11, 0.15); color: var(--accent-yellow); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; width: fit-content; }
+    .bio-text { color: var(--text-muted); font-size: 1.05rem; }
+
+    /* ===== PERSONAL INFORMATION BOX ===== */
+    .personal-info-box { 
+      display: flex; 
+      align-items: center; 
+      gap: 20px; 
+      background: rgba(0, 0, 0, 0.2); 
+      padding: 16px; 
+      border-radius: var(--radius-md); 
+      margin: 10px 0; 
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--bg-card-border);
+    }
+    .personal-info-box:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .personal-info-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+    .personal-info-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .personal-info-content h4 {
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+    .personal-info-content p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .hero-cta-buttons { display: flex; gap: 12px; margin-top: 5px; }
+    .btn-primary-sm { background: var(--accent-primary); color: white; text-decoration: none; padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-secondary-sm { background: transparent; border: 1px solid var(--bg-card-border); color: var(--text-main); padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+
+    .content-tabs-section { padding: 24px; }
+    .tab-buttons { display: flex; gap: 10px; border-bottom: 1px solid var(--bg-card-border); padding-bottom: 16px; margin-bottom: 20px; overflow-x: auto; }
+    .tab-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px 18px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: var(--transition); display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+    .tab-btn:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.05); }
+    .tab-btn.active { color: white; background: var(--accent-primary); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    .pane-header { margin-bottom: 20px; }
+    .pane-header h3 { font-size: 1.2rem; }
+    .pane-header p { color: var(--text-muted); font-size: 0.85rem; }
+
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .skill-card { background: rgba(0, 0, 0, 0.2); border: 1px solid var(--bg-card-border); padding: 16px; border-radius: var(--radius-md); display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 0.95rem; transition: var(--transition); }
+    .skill-card:hover { transform: translateY(-3px); border-color: var(--accent-primary); }
+    .skill-card i { font-size: 1.4rem; color: var(--accent-primary); }
+
+    /* Hobbies Interactive Grid & Details Panel */
+    .hobbies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .hobby-card { 
+      background: rgba(0, 0, 0, 0.2); 
+      border: 1px solid var(--bg-card-border); 
+      padding: 24px 18px; 
+      border-radius: var(--radius-md); 
+      text-align: center; 
+      transition: var(--transition); 
+      cursor: pointer;
+      position: relative;
+    }
+    .hobby-card:hover, .hobby-card.active { 
+      transform: translateY(-3px); 
+      border-color: var(--accent-pink); 
+      background: rgba(236, 72, 153, 0.08);
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+    }
+    .hobby-card i { font-size: 2.2rem; color: var(--accent-pink); margin-bottom: 12px; }
+    .hobby-card h4 { font-size: 1.05rem; margin-bottom: 4px; }
+    .click-hint { font-size: 0.72rem; color: var(--accent-pink); font-weight: 600; }
+
+    /* Expandable Items List Box */
+    .hobby-details-box {
+      margin-top: 24px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--accent-pink);
+      border-radius: var(--radius-md);
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hobby-details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--bg-card-border);
+      padding-bottom: 10px;
+    }
+    .hobby-details-header h4 {
+      font-size: 1.1rem;
+      color: var(--accent-pink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Clean Text List Chips */
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .item-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--bg-card-border);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition);
+    }
+    .item-chip:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+    }
+
+    /* Contact Details Grid */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .contact-card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--bg-card-border);
+      padding: 20px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: var(--transition);
+    }
+    .contact-card:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-3px);
+      background: rgba(99, 102, 241, 0.08);
+    }
+    .contact-card i {
+      font-size: 1.8rem;
+      color: var(--accent-primary);
+    }
+    .contact-card-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .contact-card-info span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .contact-card-info a, .contact-card-info strong {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .contact-card-info a:hover {
+      color: var(--accent-primary);
+    }
+
+    /* Terminal Styles */
+    .terminal-window { background: #090d16; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; font-family: var(--font-code); }
+    .terminal-bar { background: #111827; padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.red { background: #ef4444; } .dot.yellow { background: #f59e0b; } .dot.green { background: #10b981; }
+    .term-title { margin-left: 10px; font-size: 0.75rem; color: var(--text-muted); }
+    .terminal-body { padding: 16px; height: 200px; overflow-y: auto; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px; }
+    .terminal-input-row { display: flex; align-items: center; padding: 10px 16px; background: #0d1322; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+    .prompt { color: var(--accent-green); margin-right: 10px; font-weight: 600; }
+    .terminal-input-row input { background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-code); font-size: 0.85rem; width: 100%; }
+    .text-dim { color: var(--text-muted); }
+    .text-glow { color: var(--accent-primary); font-weight: 600; }
+
+    /* Arcade Lab Section */
+    .lab-section { padding: 28px; }
+    .lab-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .lab-header h2 { font-size: 1.3rem; }
+    .lab-header p { font-size: 0.85rem; color: var(--text-muted); }
+    .game-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 20px; }
+    .stat-box { background: rgba(0, 0, 0, 0.2); padding: 12px; border-radius: var(--radius-sm); text-align: center; border: 1px solid var(--bg-card-border); }
+    .stat-label { display: block; font-size: 0.75rem; color: var(--text-muted); }
+    .stat-value { font-size: 1.2rem; font-weight: 700; color: var(--accent-primary); }
+
+    /* Customizer Drawer */
+    .editor-drawer { position: fixed; top: 0; right: -420px; width: 380px; height: 100vh; background: var(--bg-main); border-left: 1px solid var(--bg-card-border); z-index: 1000; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5); }
+    .editor-drawer.open { right: 0; }
+    .drawer-header { padding: 20px; border-bottom: 1px solid var(--bg-card-border); display: flex; justify-content: space-between; align-items: center; }
+    .close-btn { background: transparent; border: none; color: var(--text-muted); font-size: 1.2rem; cursor: pointer; }
+    .drawer-body { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+    .help-text { font-size: 0.8rem; color: var(--text-muted); }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+    .form-group input, .form-group textarea { background: rgba(0, 0, 0, 0.2); border: 1px solid var(--bg-card-border); padding: 8px 12px; border-radius: var(--radius-sm); color: var(--text-main); font-family: var(--font-body); font-size: 0.85rem; }
+    .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-primary); }
+    .full-width { width: 100%; justify-content: center; margin-top: 10px; }
+
+    .backdrop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    .backdrop.visible { opacity: 1; pointer-events: auto; }
+
+    /* ===== PERSONAL INFORMATION MODAL ===== */
+    .info-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .info-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .info-modal-card {
+      background: var(--bg-main);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.25s ease;
+    }
+    .info-modal.open .info-modal-card {
+      transform: translateY(0) scale(1);
+    }
+    .info-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--bg-card-border);
+      background: var(--bg-card);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    .info-modal-header h3 {
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-main);
+    }
+    .info-modal-header h3 i {
+      color: var(--accent-primary);
+    }
+    .info-modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .info-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 12px;
+      align-items: baseline;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed var(--bg-card-border);
+    }
+    .info-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .info-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-label i {
+      color: var(--accent-primary);
+      width: 14px;
+      text-align: center;
+    }
+    .info-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-word;
+    }
+    .info-value a {
+      color: var(--accent-primary);
+      text-decoration: none;
+    }
+    .info-value a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 520px) {
+      .info-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+      .info-modal-card {
+        max-width: 92vw;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ===== COWBOY VS. BANDITS TYPING GAME ===== */
+    .cowboy-game {
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #24160f;
+    }
+
+    .western-sky {
+      position: relative;
+      height: 380px;
+      overflow: hidden;
+      isolation: isolate;
+      background: linear-gradient(
+        180deg,
+        #38294f 0%,
+        #a64f45 48%,
+        #e5a052 75%,
+        #f6cb7b 100%
+      );
+    }
+
+    .western-sun {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #ffd985;
+      top: 75px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 55px rgba(255, 217, 133, 0.45);
+      z-index: -1;
+    }
+
+    .western-mountains {
+      position: absolute;
+      inset: 100px 0 45px;
+      background: #633c42;
+      clip-path: polygon(
+        0 75%, 13% 25%, 24% 66%, 40% 8%,
+        55% 65%, 71% 20%, 85% 70%, 100% 30%,
+        100% 100%, 0 100%
+      );
+      z-index: -1;
+    }
+
+    .western-status {
+      position: absolute;
+      z-index: 5;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .western-status span {
+      padding: 6px 10px;
+      background: rgba(26, 18, 24, 0.8);
+      border: 1px solid rgba(255, 217, 133, 0.3);
+      border-radius: 7px;
+      color: #ffe6ae;
+      font-size: 0.78rem;
+      font-family: var(--font-code);
+    }
+
+    .western-status b {
+      color: white;
+    }
+
+    .western-message {
+      position: absolute;
+      z-index: 4;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(90%, 400px);
+      text-align: center;
+      padding: 20px;
+      background: rgba(35, 22, 19, 0.9);
+      color: #ffedca;
+      border: 2px solid #d9a45c;
+      border-radius: 10px;
+    }
+
+    .western-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      color: #ffd477;
+      margin-bottom: 8px;
+    }
+
+    .western-message p {
+      font-size: 0.9rem;
+      margin: 5px 0;
+    }
+
+    .western-message small {
+      display: block;
+      color: #e8bd82;
+      margin-top: 12px;
+    }
+
+    .western-bandits {
+      position: absolute;
+      inset: 55px 0 70px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .western-bandit {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      /* top and left set dynamically by JS */
+    }
+
+    .bandit-sprite {
+      font-size: 1.9rem;
+      filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.4));
+    }
+
+    .bandit-word {
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #2b1b17;
+      border: 1px solid #e9b96c;
+      color: #fff0cf;
+      font-family: var(--font-code);
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .bandit-word .typed {
+      color: #5ee6a8;
+    }
+
+    .western-bandit.targeted .bandit-word {
+      border-color: #6ee7b7;
+      box-shadow: 0 0 12px rgba(110, 231, 183, 0.6);
+    }
+
+    .western-cowboy {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      bottom: 70px;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .western-cowboy span {
+      font-size: 2.8rem;
+      filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.35));
+    }
+
+    .western-cowboy small {
+      color: #fff0cf;
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .western-town {
+      position: absolute;
+      z-index: 1;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 55px;
+      display: flex;
+      align-items: end;
+      justify-content: space-around;
+      background: rgba(105, 58, 36, 0.5);
+      border-top: 3px solid #e5ae65;
+      font-size: 1.8rem;
+    }
+
+    .western-console {
+      padding: 18px;
+      background: #211711;
+      border-top: 1px solid #68452b;
+    }
+
+    .western-console label {
+      display: block;
+      margin-bottom: 8px;
+      color: #f3c77e;
+      font-family: var(--font-code);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .western-console input {
+      width: 100%;
+      padding: 13px 14px;
+      background: #120e0c;
+      border: 1px solid #a87542;
+      border-radius: 8px;
+      color: #fff0cf;
+      font-family: var(--font-code);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .western-console input:focus {
+      border-color: #ffd477;
+      box-shadow: 0 0 12px rgba(255, 212, 119, 0.2);
+    }
+
+    .western-console input:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    #cowboyTypingHint {
+      margin-top: 8px;
+      color: #c9a77f;
+      font-size: 0.75rem;
+    }
+
+    #cowboyStatus {
+      font-size: 1rem;
+    }
+
+    /* ===== SHOOTING IRON / ZAPPER BAR ===== */
+    .zapper-bar-container {
+      margin-top: 12px;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-sm);
+      border: 1px solid #68452b;
+    }
+
+    .zapper-label {
+      font-size: 0.75rem;
+      color: #f3c77e;
+      font-family: var(--font-code);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .zapper-track {
+      width: 100%;
+      height: 12px;
+      background: #120e0c;
+      border-radius: 6px;
+      border: 1px solid #a87542;
+      overflow: hidden;
+    }
+
+    .zapper-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24, #fde68a);
+      border-radius: 6px;
+      transition: width 0.08s linear;
+      box-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+    }
+
+    #cowboyZapperStatus {
+      font-size: 0.7rem;
+      color: #c9a77f;
+      display: block;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 600px) {
+      .western-sky {
+        height: 400px;
+      }
+
+      .western-status {
+        gap: 5px;
+      }
+
+      .western-status span {
+        font-size: 0.68rem;
+        padding: 5px 7px;
+      }
+
+      .bandit-sprite {
+        font-size: 1.5rem;
+      }
+
+      .bandit-word {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+      }
+
+      .western-cowboy span {
+        font-size: 2.2rem;
+      }
+
+      .western-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body class="dark-mode">
+
+  <div class="bg-mesh"></div>
+
+  <header class="top-nav">
+    <div class="brand">
+      <span class="status-dot"></span>
+      <span class="brand-text">StudentOS <small>v2.0</small></span>
+    </div>
+
+    <div class="top-actions">
+      <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+      <button class="btn-primary" id="openEditorBtn"><i class="fa-solid fa-pen-to-square"></i> Edit Details</button>
+    </div>
+  </header>
+
+  <main class="workspace-container">
+    <section class="hero-grid">
+      <div class="id-card-wrapper">
+        <div class="id-card" id="idCard">
+          <div class="card-glow"></div>
+          <div class="card-top">
+            <span class="univ-logo"><i class="fa-solid fa-graduation-cap"></i> UNIVERSITY OF CEBU-MAIN</span>
+            <span class="card-chip"><i class="fa-solid fa-microchip"></i></span>
+          </div>
+          <div class="card-body">
+            <div class="avatar-container">
+              <img id="displayAvatar" src="waa.jpg" alt="Student Photo" />
+              <div class="avatar-badge" title="Status: Coding & Alive"><i class="fa-solid fa-bolt"></i></div>
+            </div>
+            <div class="student-info">
+              <h2 id="displayName">Joshua Podilana</h2>
+              <p id="displayDegree" class="degree-tag">BS in Information Technology</p>
+              <div class="meta-list">
+                <span><i class="fa-solid fa-id-card"></i> ID: <strong id="displayId">2026-88491</strong></span>
+                <span><i class="fa-solid fa-calendar"></i> Year: <strong id="displayYear">University of Cebu Main Campus</strong></span>
+              </div>
+
+              <div class="contact-links-box">
+                <a href="https://github.com/joshuapodilana" target="_blank" rel="noopener noreferrer" class="contact-chip" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                <a href="https://www.facebook.com/podilanafam" target="_blank" rel="noopener noreferrer" class="contact-chip" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.instagram.com/shua.0xx/" target="_blank" rel="noopener noreferrer" class="contact-chip" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://discord.com/users/1552657226588627025" target="_blank" rel="noopener noreferrer" class="contact-chip" title="Discord"><i class="fa-brands fa-discord"></i></a>
+                <a href="mailto:joshuapodilana@gmail.com" class="contact-chip" title="Email"><i class="fa-solid fa-envelope"></i></a>
+              </div>
+
+            </div>
+          </div>
+          <div class="card-footer">
+            <span class="barcode">|||| | ||||| ||| ||||||| |</span>
+            <span class="verify-badge"><i class="fa-solid fa-shield-check"></i> VERIFIED</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="intro-card glass-panel">
+        <div class="pill-badge"><i class="fa-solid fa-address-card"></i> Quick Profile</div>
+        <h1>Yokoso!</h1>
+        <p id="displayBio" class="bio-text">
+          Hi Im Joshua Podilana, BSIT student at University of Cebu Main Campus, passionate about building clean web interfaces, gaming, and exploring technology.
+        </p>
+
+        <!-- PERSONAL INFORMATION BOX -->
+        <div class="personal-info-box" id="openPersonalInfoBox">
+          <div class="personal-info-icon">
+            <i class="fa-solid fa-id-badge"></i>
+          </div>
+          <div class="personal-info-content">
+            <h4>Personal Information</h4>
+            <p>Click to view full details (Age, Birthdate, Address, etc.)</p>
+          </div>
+          <div style="color: var(--text-muted);">
+            <i class="fa-solid fa-chevron-right"></i>
+          </div>
+        </div>
+
+        <div class="hero-cta-buttons">
+          <a href="#interactive-lab" class="btn-primary-sm"><i class="fa-solid fa-gamepad"></i> Try HCI Arcade</a>
+          <button class="btn-secondary-sm" id="lofiToggleBtn"><i class="fa-solid fa-music"></i> <span id="lofiStatus">Play Lofi Beats</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-tabs-section glass-panel">
+      <nav class="tab-buttons">
+        <button class="tab-btn active" data-tab="skillsTab"><i class="fa-solid fa-code"></i> Skills & Tech</button>
+        <button class="tab-btn" data-tab="hobbiesTab"><i class="fa-solid fa-heart"></i> Hobbies & Passions</button>
+        <button class="tab-btn" data-tab="terminalTab"><i class="fa-solid fa-terminal"></i> Student CLI</button>
+        <button class="tab-btn" data-tab="contactTab"><i class="fa-solid fa-address-card"></i> Social Media</button>
+      </nav>
+
+      <div class="tab-content-area">
+        <div class="tab-pane active" id="skillsTab">
+          <div class="pane-header">
+            <h3>Technical Arsenal</h3>
+            <p>Languages, frameworks, and tools I use for projects and coursework.</p>
+          </div>
+          <div id="skillsGrid" class="skills-grid"></div>
+        </div>
+
+        <div class="tab-pane" id="hobbiesTab">
+          <div class="pane-header">
+            <h3>Life Beyond the Keyboard</h3>
+            <p>Click any hobby box below to view my favorite games, shows, and manhwas!</p>
+          </div>
+          
+          <div id="hobbiesGrid" class="hobbies-grid"></div>
+
+          <div id="hobbyDetailsBox" class="hobby-details-box">
+            <div class="hobby-details-header">
+              <h4 id="hobbyDetailsTitle">Favorite Items</h4>
+              <button class="btn-sm btn-outline" id="closeHobbyDetailsBtn"><i class="fa-solid fa-xmark"></i> Close</button>
+            </div>
+            <div id="hobbyItemsGrid"></div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="terminalTab">
+          <div class="terminal-window">
+            <div class="terminal-bar">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+              <span class="term-title">student@desk:~ (zsh)</span>
+            </div>
+            <div class="terminal-body" id="termOutput">
+              <p class="term-line text-dim">StudentOS Shell v1.0. Type <span class="text-glow">'help'</span> for available commands.</p>
+            </div>
+            <div class="terminal-input-row">
+              <span class="prompt">$</span>
+              <input type="text" id="termInput" placeholder="Try 'skills', 'hobbies', 'clear', or 'motto'..." autocomplete="off" />
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="contactTab">
+          <div class="pane-header">
+            <h3>Get in Touch</h3>
+            <p>Feel free to reach out to me through any of the platforms below!</p>
+          </div>
+          <div class="contact-grid">
+            <div class="contact-card">
+              <i class="fa-solid fa-envelope"></i>
+              <div class="contact-card-info">
+                <span>Email</span>
+                <a href="mailto:joshuapodilana@gmail.com">joshuapodilana@gmail.com</a>
+              </div>
+            </div>
+            <div class="contact-card">
+              <i class="fa-brands fa-github"></i>
+              <div class="contact-card-info">
+                <span>GitHub</span>
+                <a href="https://github.com/joshuapodilana" target="_blank">github.com/joshuapodilana</a>
+              </div>
+            </div>
+            <div class="contact-card">
+              <i class="fa-brands fa-facebook"></i>
+              <div class="contact-card-info">
+                <span>Facebook</span>
+                <a href="https://www.facebook.com/podilanafam" target="_blank">facebook.com/podilanafam</a>
+              </div>
+            </div>
+            <div class="contact-card">
+              <i class="fa-brands fa-instagram"></i>
+              <div class="contact-card-info">
+                <span>Instagram</span>
+                <a href="https://www.instagram.com/shua.0xx/" target="_blank">@shua.0xx</a>
+              </div>
+            </div>
+            <div class="contact-card">
+              <i class="fa-brands fa-discord"></i>
+              <div class="contact-card-info">
+                <span>Discord</span>
+                <a href="https://discord.com/channels/@me/1552657226588627025" target="_blank">@me</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COWBOY VS. BANDITS (TYPER SHARK FORMAT) ===== -->
+    <section class="lab-section glass-panel" id="interactive-lab">
+      <div class="lab-header">
+        <div>
+          <h2>🤠 Cowboy vs. Bandits: Dusty Creek Showdown</h2>
+          <p>
+            Bandits are descending on the town! Type the words above them to shoot them down.
+            Build up your Shooting Iron to clear the screen.
+          </p>
+        </div>
+        <button class="btn-primary" id="startGameBtn">
+          <i class="fa-solid fa-play"></i> Start Showdown
+        </button>
+      </div>
+
+      <div class="cowboy-game">
+        <div class="western-sky" id="cowboyArena">
+          <div class="western-sun"></div>
+          <div class="western-mountains"></div>
+
+          <div class="western-status">
+            <span>⭐ Score: <b id="cowboyScore">0</b></span>
+            <span>🔥 Combo: <b id="cowboyCombo">0</b></span>
+            <span>🌵 Town: <b id="cowboyHealth">100</b>%</span>
+            <span>🏜️ Wave: <b id="cowboyWave">1</b></span>
+          </div>
+
+          <div class="western-message" id="cowboyMessage">
+            <div class="western-title">WANTED!</div>
+            <p>Outlaws are riding into Dusty Creek.</p>
+            <p>Type their words to shoot them down before they reach you!</p>
+            <small>Press Start Showdown to begin.</small>
+          </div>
+
+          <div class="western-bandits" id="cowboyBandits"></div>
+
+          <div class="western-cowboy">
+            <span>🤠</span>
+            <small>SHERIFF</small>
+          </div>
+
+          <div class="western-town">
+            <span>🏜️</span><span>🏚️</span><span>🏠</span><span>🌵</span><span>🏠</span><span>🏚️</span><span>🏜️</span>
+          </div>
+        </div>
+
+        <div class="western-console">
+          <label for="cowboyTypingInput">
+            <i class="fa-solid fa-keyboard"></i>
+            TYPE THE BANDIT'S WORD
+          </label>
+
+          <input
+            id="cowboyTypingInput"
+            type="text"
+            placeholder="Start the showdown first..."
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            disabled
+          />
+
+          <p id="cowboyTypingHint">
+            Type a complete word and press Space or Enter to fire. Fill the bar to use your Shooting Iron!
+          </p>
+
+          <div class="zapper-bar-container">
+            <div class="zapper-label"><i class="fa-solid fa-gun"></i> Shooting Iron</div>
+            <div class="zapper-track">
+              <div class="zapper-fill" id="cowboyZapperFill"></div>
+            </div>
+            <small id="cowboyZapperStatus">Charging...</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-stats">
+        <div class="stat-box">
+          <span class="stat-label">Bandits Defeated</span>
+          <span class="stat-value" id="cowboyKills">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Accuracy</span>
+          <span class="stat-value" id="cowboyAccuracy">100%</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Status</span>
+          <span class="stat-value" id="cowboyStatus">Ready</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="editor-drawer" id="editorDrawer">
+    <div class="drawer-header">
+      <h3><i class="fa-solid fa-sliders"></i> Customize My Info</h3>
+      <button class="close-btn" id="closeEditorBtn"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-body">
+      <p class="help-text">Update your personal details below to dynamically re-render the website!</p>
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="editName" value="Joshua Podilana" />
+      </div>
+
+      <div class="form-group">
+        <label>Degree Program</label>
+        <input type="text" id="editDegree" value="BS in Information Technology" />
+      </div>
+
+      <div class="form-group">
+        <label>Student ID Number</label>
+        <input type="text" id="editId" value="2026-88491" />
+      </div>
+
+      <div class="form-group">
+        <label>Year Level</label>
+        <input type="text" id="editYear" value="University of Cebu Main Campus" />
+      </div>
+
+      <div class="form-group">
+        <label>Photo Image URL</label>
+        <input type="text" id="editAvatar" value="waa.jpg" />
+      </div>
+
+      <div class="form-group">
+        <label>Bio / About Me</label>
+        <textarea id="editBio" rows="3">BSIT student at University of Cebu Main Campus, passionate about building clean web interfaces, gaming, and exploring technology.</textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="text" id="editEmail" value="" placeholder="e.g. yourname@email.com" />
+      </div>
+
+      <div class="form-group">
+        <label>Facebook Link</label>
+        <input type="text" id="editFacebook" value="" placeholder="https://facebook.com/..." />
+      </div>
+
+      <div class="form-group">
+        <label>Instagram Handle</label>
+        <input type="text" id="editInstagram" value="" placeholder="@yourusername" />
+      </div>
+
+      <div class="form-group">
+        <label>Skills (Comma Separated)</label>
+        <input type="text" id="editSkills" value="JavaScript, Python, React, HTML5/CSS3, Git & GitHub, UI/UX Design, SQL Databases" />
+      </div>
+
+      <div class="form-group">
+        <label>Hobbies (Comma Separated)</label>
+        <input type="text" id="editHobbies" value="Gaming, Watching Kdrama & Anime, Reading Manwhas" />
+      </div>
+
+      <button class="btn-primary full-width" id="saveCustomizerBtn"><i class="fa-solid fa-check"></i> Apply & Save Changes</button>
+    </div>
+  </aside>
+
+  <!-- ===== PERSONAL INFORMATION MODAL ===== -->
+  <div class="info-modal" id="personalInfoModal">
+    <div class="info-modal-card">
+      <div class="info-modal-header">
+        <h3><i class="fa-solid fa-id-badge"></i> Personal Information</h3>
+        <button class="close-btn" id="closePersonalInfoBtn"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="info-modal-body">
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-user"></i> Full Name</span>
+          <span class="info-value">Joshua Podilana</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-cake-candles"></i> Age</span>
+          <span class="info-value">20</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-calendar-day"></i> Birthdate</span>
+          <span class="info-value">June 07, 2006</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-venus-mars"></i> Sex</span>
+          <span class="info-value">Male</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-phone"></i> Phone Number</span>
+          <span class="info-value">09472292370</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-envelope"></i> Email Address</span>
+          <span class="info-value"><a href="mailto:joshuapodilana@gmail.com">joshuapodilana@gmail.com</a></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-location-dot"></i> Address</span>
+          <span class="info-value">Sition Mansanitas Cogon Pardo, Cebu City</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-heart"></i> Civil Status</span>
+          <span class="info-value">Single</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fa-solid fa-church"></i> Religion</span>
+          <span class="info-value">Roman-Catholic</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <script>
+    /* ==========================================================================
+       STUDENTOS INTERACTIVE LOGIC & CONTROLLERS
+       ========================================================================== */
+    const studentState = {
+      name: "Joshua Podilana",
+      degree: "BS in Information Technology",
+      studentId: "24947483",
+      year: "3rd",
+      avatar: "waa.jpg",
+      bio: "Im Joshua Podilana, BSIT student at University of Cebu Main Campus, passionate about building clean web interfaces, gaming, and exploring technology.",
+      skills: ["Python", "SQL Databases", "Coding"],
+      hobbies: ["Gaming", "Watching Kdrama & Anime", "Reading Manwhas"]
+    };
+
+    const hobbyData = {
+      games: [
+        "Dota 2",
+        "Valorant",
+        "Roblox",
+        "MLBB"
+      ],
+      kdramaAnime: [
+        "Vincenzo", "Weak Hero Class 1", "Taxi Driver", "Bloodhounds", "All of Us Are Dead",
+        "Sweet Home", "Happiness", "My Name", "Moving", "Kingdom",
+        "Solo Leveling", "Jujutsu Kaisen", "Demon Slayer", "Attack on Titan", "Chainsaw Man",
+        "One Piece", "Hunter x Hunter", "Bleach: TYBW", "Mob Psycho 100", "Cyberpunk: Edgerunners"
+      ],
+      manhwas: [
+        "Lookism",
+        "Manager Kim",
+        "Legend of the Northern Blade",
+        "Reality Quest",
+        "Eleceed",
+        "The Bully In Charge"
+      ]
+    };
+
+    let audioCtx = null;
+
+    function playSoundEffect(type) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'click') {
+          osc.frequency.value = 600;
+          gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.05);
+        } else if (type === 'hit') {
+          osc.frequency.value = 880;
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.1);
+        } else if (type === 'success') {
+          osc.frequency.value = 523.25;
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.3);
+        }
+      } catch (e) {}
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProfile();
+      init3DCard();
+      initTabs();
+      initTerminal();
+      initCustomizer();
+      initThemeToggle();
+      initCowboyTypingGame();
+      initLofiSynth();
+      initPersonalInfoModal();
+
+      document.getElementById('closeHobbyDetailsBtn').addEventListener('click', () => {
+        document.getElementById('hobbyDetailsBox').style.display = 'none';
+        document.querySelectorAll('.hobby-card').forEach(c => c.classList.remove('active'));
+      });
+    });
+
+    /* ===== PERSONAL INFORMATION MODAL LOGIC ===== */
+    function initPersonalInfoModal() {
+      const modal = document.getElementById('personalInfoModal');
+      const openBox = document.getElementById('openPersonalInfoBox');
+      const closeBtn = document.getElementById('closePersonalInfoBtn');
+
+      function openModal() {
+        modal.classList.add('open');
+        playSoundEffect('click');
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+      }
+
+      openBox.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) {
+          closeModal();
+        }
+      });
+    }
+
+    function renderProfile() {
+      document.getElementById('displayName').textContent = studentState.name;
+      document.getElementById('displayDegree').textContent = studentState.degree;
+      document.getElementById('displayId').textContent = studentState.studentId;
+      document.getElementById('displayYear').textContent = studentState.year;
+      document.getElementById('displayAvatar').src = studentState.avatar;
+      document.getElementById('displayBio').textContent = studentState.bio;
+
+      const skillsGrid = document.getElementById('skillsGrid');
+      skillsGrid.innerHTML = studentState.skills.map(skill => `
+        <div class="skill-card">
+          <i class="fa-solid fa-code"></i>
+          <span>${skill.trim()}</span>
+        </div>
+      `).join('');
+
+      const hobbiesGrid = document.getElementById('hobbiesGrid');
+      hobbiesGrid.innerHTML = studentState.hobbies.map(hobby => {
+        const h = hobby.trim();
+        let iconClass = "fa-solid fa-heart";
+
+        if (h.toLowerCase().includes('game') || h.toLowerCase().includes('gaming')) {
+          iconClass = "fa-solid fa-gamepad";
+        } else if (h.toLowerCase().includes('anime') || h.toLowerCase().includes('kdrama') || h.toLowerCase().includes('tv') || h.toLowerCase().includes('watch')) {
+          iconClass = "fa-solid fa-tv";
+        } else if (h.toLowerCase().includes('read') || h.toLowerCase().includes('manhwa') || h.toLowerCase().includes('manga') || h.toLowerCase().includes('book')) {
+          iconClass = "fa-solid fa-book-open";
+        }
+
+        return `
+          <div class="hobby-card" onclick="showHobbyDetails('${h}', this)">
+            <i class="${iconClass}"></i>
+            <h4>${h}</h4>
+            <span class="click-hint"><i class="fa-solid fa-hand-pointer"></i> Click to view items</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function showHobbyDetails(hobbyTitle, cardElement) {
+      playSoundEffect('click');
+
+      document.querySelectorAll('.hobby-card').forEach(c => c.classList.remove('active'));
+      cardElement.classList.add('active');
+
+      const detailsBox = document.getElementById('hobbyDetailsBox');
+      const titleElem = document.getElementById('hobbyDetailsTitle');
+      const itemsContainer = document.getElementById('hobbyItemsGrid');
+
+      detailsBox.style.display = 'block';
+      itemsContainer.innerHTML = '';
+
+      const lowerTitle = hobbyTitle.toLowerCase();
+      let activeList = [];
+
+      if (lowerTitle.includes('game') || lowerTitle.includes('gaming')) {
+        titleElem.innerHTML = '<i class="fa-solid fa-gamepad"></i> Games I Play';
+        activeList = hobbyData.games;
+      } else if (lowerTitle.includes('kdrama') || lowerTitle.includes('anime') || lowerTitle.includes('watch')) {
+        titleElem.innerHTML = '<i class="fa-solid fa-tv"></i> K-Dramas & Anime I Watched';
+        activeList = hobbyData.kdramaAnime;
+      } else if (lowerTitle.includes('read') || lowerTitle.includes('manhwa')) {
+        titleElem.innerHTML = '<i class="fa-solid fa-book-open"></i> Manhwas I Read';
+        activeList = hobbyData.manhwas;
+      } else {
+        detailsBox.style.display = 'none';
+        return;
+      }
+
+      let html = '<div class="items-grid">';
+      activeList.forEach(item => {
+        html += `
+          <div class="item-chip">
+            <i class="fa-solid fa-circle-check" style="color: var(--accent-pink); font-size: 0.8rem;"></i>
+            <span>${item}</span>
+          </div>
+        `;
+      });
+      html += '</div>';
+      itemsContainer.innerHTML = html;
+    }
+
+    function init3DCard() {
+      const card = document.getElementById('idCard');
+      if (!card) return;
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        card.style.transform = `rotateY(${x / 15}deg) rotateX(${-y / 15}deg)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+      });
+    }
+
+    function initTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          playSoundEffect('click');
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabPanes.forEach(p => p.classList.remove('active'));
+
+          btn.classList.add('active');
+          const targetTab = btn.getAttribute('data-tab');
+          document.getElementById(targetTab).classList.add('active');
+        });
+      });
+    }
+
+    function initTerminal() {
+      const input = document.getElementById('termInput');
+      const output = document.getElementById('termOutput');
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const cmd = input.value.trim().toLowerCase();
+          input.value = '';
+
+          const cmdLine = document.createElement('p');
+          cmdLine.className = 'term-line';
+          cmdLine.innerHTML = `<span class="prompt">$</span> ${cmd}`;
+          output.appendChild(cmdLine);
+
+          const response = document.createElement('p');
+          response.className = 'term-line text-dim';
+
+          switch(cmd) {
+            case 'help':
+              response.innerHTML = "Available commands: <span class='text-glow'>skills</span>, <span class='text-glow'>hobbies</span>, <span class='text-glow'>clear</span>, <span class='text-glow'>motto</span>, <span class='text-glow'>whoami</span>";
+              break;
+            case 'skills':
+              response.textContent = `Skills: ${studentState.skills.join(', ')}`;
+              break;
+            case 'hobbies':
+              response.textContent = `Hobbies: ${studentState.hobbies.join(', ')}`;
+              break;
+            case 'whoami':
+              response.textContent = `${studentState.name} | ${studentState.degree} (${studentState.year})`;
+              break;
+            case 'motto':
+              response.innerHTML = "<span style='color: #10b981;'>Vaaamoooss!!.</span>";
+              break;
+            case 'clear':
+              output.innerHTML = '';
+              return;
+            default:
+              response.textContent = `Command not recognized: '${cmd}'. Type 'help' for commands.`;
+          }
+
+          output.appendChild(response);
+          output.scrollTop = output.scrollHeight;
+          playSoundEffect('click');
+        }
+      });
+    }
+
+    /* ==========================================================================
+       COWBOY VS. BANDITS — TYPER SHARK STYLE
+       Bandits descend from the top. Type their word to shoot.
+       A "Shooting Iron" zapper recharges over time and clears the screen.
+       ========================================================================== */
+    function initCowboyTypingGame() {
+      const startBtn = document.getElementById('startGameBtn');
+      const arena = document.getElementById('cowboyArena');
+      const banditsBox = document.getElementById('cowboyBandits');
+      const input = document.getElementById('cowboyTypingInput');
+      const message = document.getElementById('cowboyMessage');
+      const zapperFill = document.getElementById('cowboyZapperFill');
+      const zapperStatus = document.getElementById('cowboyZapperStatus');
+
+      if (!startBtn || !arena || !banditsBox || !input || !message || !zapperFill) return;
+
+      const words = [
+        'dust', 'sheriff', 'bullet', 'desert', 'wanted',
+        'outlaw', 'horse', 'bandit', 'saloon', 'revolver',
+        'sunset', 'cactus', 'marshal', 'frontier', 'showdown',
+        'gunslinger', 'wildwest', 'bounty', 'mustang', 'cowboy'
+      ];
+
+      let bandits = [];
+      let score = 0;
+      let kills = 0;
+      let combo = 0;
+      let health = 100;
+      let wave = 1;
+      let attempts = 0;
+      let hits = 0;
+      let active = false;
+      let gameOver = false;
+      let nextId = 0;
+      let gameTimer = null;
+      let lastSpawn = 0;
+
+      // Zapper state
+      let zapperCharge = 0;
+      const ZAPPER_MAX = 100;
+      const ZAPPER_RECHARGE_RATE = 0.22; // per tick (~60fps)
+
+      function updateStats() {
+        document.getElementById('cowboyScore').textContent = score;
+        document.getElementById('cowboyKills').textContent = kills;
+        document.getElementById('cowboyCombo').textContent = combo;
+        document.getElementById('cowboyHealth').textContent = health;
+        document.getElementById('cowboyWave').textContent = wave;
+
+        document.getElementById('cowboyAccuracy').textContent =
+          (attempts ? Math.round((hits / attempts) * 100) : 100) + '%';
+
+        document.getElementById('cowboyStatus').textContent =
+          !active ? (gameOver ? 'Defeated' : 'Ready')
+          : health <= 30 ? 'Danger!'
+          : 'Fighting';
+      }
+
+      function updateZapperUI() {
+        const pct = Math.min(100, (zapperCharge / ZAPPER_MAX) * 100);
+        zapperFill.style.width = pct + '%';
+        if (pct >= 100) {
+          zapperStatus.textContent = 'READY — press Tab to fire!';
+          zapperStatus.style.color = '#fde68a';
+        } else {
+          zapperStatus.textContent = `Charging... ${Math.floor(pct)}%`;
+          zapperStatus.style.color = '#c9a77f';
+        }
+      }
+
+      function fireZapper() {
+        if (zapperCharge < ZAPPER_MAX || !active) return;
+        if (bandits.length === 0) return;
+
+        playSoundEffect('success');
+        // Clear all bandits on screen
+        bandits.forEach(b => {
+          b.element.style.transition = 'opacity 0.15s, transform 0.15s';
+          b.element.style.opacity = '0';
+          b.element.style.transform = 'scale(0.2)';
+          setTimeout(() => b.element.remove(), 160);
+          kills++;
+          score += 15;
+        });
+        combo += bandits.length;
+        bandits = [];
+
+        zapperCharge = 0;
+        updateZapperUI();
+        updateStats();
+
+        // brief flash on arena
+        arena.style.boxShadow = 'inset 0 0 60px rgba(255, 212, 119, 0.7)';
+        setTimeout(() => { arena.style.boxShadow = ''; }, 200);
+      }
+
+      function spawnBandit() {
+        if (!active || bandits.length >= 6) return;
+
+        const word = words[Math.floor(Math.random() * words.length)];
+        const arenaRect = arena.getBoundingClientRect();
+        const playfieldWidth = arenaRect.width - 60;
+        const x = 20 + Math.random() * Math.max(1, playfieldWidth);
+
+        const bandit = {
+          id: ++nextId,
+          word,
+          x: x,
+          y: -10, // start above the play area
+          speed: 0.10 + wave * 0.02 + Math.random() * 0.04,
+          element: document.createElement('div')
+        };
+
+        bandit.element.className = 'western-bandit';
+        bandit.element.style.left = bandit.x + 'px';
+        bandit.element.style.top = bandit.y + 'px';
+        bandit.element.innerHTML = `
+          <span class="bandit-sprite">🤠</span>
+          <span class="bandit-word">${word}</span>
+        `;
+
+        banditsBox.appendChild(bandit.element);
+        bandits.push(bandit);
+        renderTypedPrefix();
+      }
+
+      function renderTypedPrefix() {
+        const typed = input.value.trim().toLowerCase();
+
+        bandits.forEach(bandit => {
+          const wordElement = bandit.element.querySelector('.bandit-word');
+          const matched = typed && bandit.word.startsWith(typed);
+
+          bandit.element.classList.toggle('targeted', !!matched);
+
+          if (matched) {
+            wordElement.innerHTML =
+              `<span class="typed">${bandit.word.slice(0, typed.length)}</span>` +
+              bandit.word.slice(typed.length);
+          } else {
+            wordElement.textContent = bandit.word;
+          }
+        });
+      }
+
+      function removeBandit(bandit) {
+        bandit.element.remove();
+        bandits = bandits.filter(item => item.id !== bandit.id);
+      }
+
+      function shoot() {
+        if (!active || gameOver) return;
+
+        const typed = input.value.trim().toLowerCase();
+        if (!typed) return;
+
+        attempts++;
+
+        const target = bandits.find(bandit => bandit.word === typed);
+
+        if (target) {
+          hits++;
+          combo++;
+          score += 10 + Math.floor(combo / 3) * 5;
+          kills++;
+
+          removeBandit(target);
+          playSoundEffect('hit');
+
+          // Wave progression every 6 kills
+          if (kills > 0 && kills % 6 === 0) {
+            wave++;
+          }
+        } else {
+          combo = 0;
+          playSoundEffect('click');
+        }
+
+        input.value = '';
+        renderTypedPrefix();
+        updateStats();
+      }
+
+      function endGame() {
+        gameOver = true;
+        active = false;
+        if (gameTimer) clearInterval(gameTimer);
+        input.disabled = true;
+        message.style.display = 'block';
+        message.innerHTML = `
+          <div class="western-title">GAME OVER</div>
+          <p>The bandits took over Dusty Creek...</p>
+          <p>Final Score: <b>${score}</b> &middot; Bandits Defeated: <b>${kills}</b></p>
+          <small>Press Start Showdown to ride again.</small>
+        `;
+        updateStats();
+      }
+
+      function gameLoop() {
+        if (!active) return;
+
+        const now = performance.now();
+        const arenaHeight = arena.clientHeight;
+        const cowboyY = arenaHeight - 70; // where the cowboy stands
+
+        // Spawn logic
+        if (now - lastSpawn > 1500 - Math.min(700, wave * 80) && bandits.length < 6) {
+          spawnBandit();
+          lastSpawn = now;
+        }
+
+        // Move bandits downward
+        bandits.slice().forEach(bandit => {
+          bandit.y += bandit.speed;
+          bandit.element.style.top = bandit.y + 'px';
+
+          if (bandit.y >= cowboyY - 40) {
+            // Bandit reached the cowboy/town
+            health -= 10;
+            combo = 0;
+            removeBandit(bandit);
+            playSoundEffect('click');
+
+            if (health <= 0) {
+              health = 0;
+              endGame();
+            }
+          }
+        });
+
+        // Recharge zapper
+        if (zapperCharge < ZAPPER_MAX) {
+          zapperCharge = Math.min(ZAPPER_MAX, zapperCharge + ZAPPER_RECHARGE_RATE);
+          updateZapperUI();
+        }
+
+        updateStats();
+      }
+
+      function startGame() {
+        // Reset all state
+        bandits.forEach(b => b.element.remove());
+        bandits = [];
+        score = 0;
+        kills = 0;
+        combo = 0;
+        health = 100;
+        wave = 1;
+        attempts = 0;
+        hits = 0;
+        active = true;
+        gameOver = false;
+        nextId = 0;
+        zapperCharge = 0;
+        lastSpawn = performance.now();
+
+        if (gameTimer) clearInterval(gameTimer);
+
+        input.disabled = false;
+        input.value = '';
+        input.focus();
+        message.style.display = 'none';
+        banditsBox.innerHTML = '';
+
+        updateZapperUI();
+        updateStats();
+
+        // Spawn a few initial bandits
+        for (let i = 0; i < 2; i++) {
+          setTimeout(() => { if (active) spawnBandit(); }, i * 400);
+        }
+
+        gameTimer = setInterval(gameLoop, 1000 / 60);
+        playSoundEffect('click');
+      }
+
+      startBtn.addEventListener('click', startGame);
+
+      input.addEventListener('input', renderTypedPrefix);
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          shoot();
+        }
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          fireZapper();
+        }
+      });
+    }
+
+    let lofiPlaying = false;
+    let lofiInterval = null;
+
+    function initLofiSynth() {
+      const lofiBtn = document.getElementById('lofiToggleBtn');
+      const lofiStatus = document.getElementById('lofiStatus');
+
+      lofiBtn.addEventListener('click', () => {
+        lofiPlaying = !lofiPlaying;
+        if (lofiPlaying) {
+          lofiStatus.textContent = 'Pause Lofi Beats';
+          startLofiChords();
+        } else {
+          lofiStatus.textContent = 'Play Lofi Beats';
+          clearInterval(lofiInterval);
+        }
+      });
+    }
+
+    function startLofiChords() {
+      const chordNotes = [261.63, 329.63, 392.00, 493.88];
+      let index = 0;
+
+      lofiInterval = setInterval(() => {
+        if (!lofiPlaying) return;
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.value = chordNotes[index % chordNotes.length];
+          gain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + 1.8);
+
+          index++;
+        } catch (e) {}
+      }, 1500);
+    }
+
+    function initThemeToggle() {
+      const toggleBtn = document.getElementById('themeToggleBtn');
+      toggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        document.body.classList.toggle('dark-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        toggleBtn.innerHTML = isLight ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        playSoundEffect('click');
+      });
+    }
+
+    function initCustomizer() {
+      const drawer = document.getElementById('editorDrawer');
+      const backdrop = document.getElementById('backdrop');
+      const openBtn = document.getElementById('openEditorBtn');
+      const closeBtn = document.getElementById('closeEditorBtn');
+      const saveBtn = document.getElementById('saveCustomizerBtn');
+
+      function openDrawer() {
+        drawer.classList.add('open');
+        backdrop.classList.add('visible');
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove('open');
+        backdrop.classList.remove('visible');
+      }
+
+      openBtn.addEventListener('click', openDrawer);
+      closeBtn.addEventListener('click', closeDrawer);
+      backdrop.addEventListener('click', closeDrawer);
+
+      saveBtn.addEventListener('click', () => {
+        studentState.name = document.getElementById('editName').value;
+        studentState.degree = document.getElementById('editDegree').value;
+        studentState.studentId = document.getElementById('editId').value;
+        studentState.year = document.getElementById('editYear').value;
+        studentState.avatar = document.getElementById('editAvatar').value;
+        studentState.bio = document.getElementById('editBio').value;
+        studentState.skills = document.getElementById('editSkills').value.split(',');
+        studentState.hobbies = document.getElementById('editHobbies').value.split(',');
+
+        renderProfile();
+        closeDrawer();
+        playSoundEffect('success');
+      });
+    }
+  </script>
+</body>
+</html>
